@@ -1,0 +1,31 @@
+Malcolm
+-------
+
+@ Anand Gupta, 2012
+
+Malcolm google talk chat room coordinating bot with a few superpowers.
+
+Install 
+-------
+
+Malcolm uses bundler to get his deps. 
+Use 'bundle install' to set things up
+
+You'll need to provide gtalk credentials for Malcolm:
+
+Fill in 
+botUsername = ''
+botPassword = ''
+in bot/mcore.rb
+
+You can customise malcolm's behavior in malcolm.rb
+
+Run
+---
+
+Just execute run.sh
+
+If you peek inside run.sh, you'll see that all it does is bundle exec, making
+Malcolm something perfectly suitable for use on Heroku. 
+
+
