@@ -1,9 +1,11 @@
 require 'logger'
 require 'blather/stanza/message'
+require './bot/bitbot'
 
 module Bot
     class Malcolm 
-        def initialize()
+        def initialize(bitbot)
+            @bitbot = bitbot
             @participants = []
             @log          = Logger.new(STDOUT)
             @log.level    = Logger::DEBUG
@@ -21,6 +23,12 @@ module Bot
             }
         end
 
+        # Applies transforms to a given message
+        def transformMessage(message) 
+            return @bitbot.transformMessage message
+        end
+
+        # Events
         def onStatus(fromNodeName)
             if not @participants.include? fromNodeName
                 @log.debug "[Malcolm]: tracking "+fromNodeName.to_s
@@ -34,10 +42,10 @@ module Bot
             # Malcolm Queries
             senderName = message.from.node.to_s
             # Global
-            if message.body.match /hey/ or message.body.match /hello/
+            #if message.body.match /hey/i or message.body.match /hello/i or message.body.match /hi/i
                 # Just a greeting
-                return broadcastMessage @participants, ("Malcolm: Hello "+senderName)
-            elsif message.body.match /whos here/
+            #    return broadcastMessage @participants, ("Malcolm: Hello "+senderName)
+            if message.body.match /who'?s here/
                 # Who's here 
                 return broadcastMessage @participants, ("Malcolm: "+@participants.join(', ')+" here")
 
@@ -50,21 +58,31 @@ module Bot
                 # Pause / Leave
                 @participants.delete message.from.stripped
                 return broadcastMessage @participants, ("Malcolm: Goodbye, "+senderName)
-            else
-                # Default / Give up
-                return broadcastMessage @participants, "Malcolm: Sorry "+senderName+", I can't help you with that."
-            end
+            
+            elsif message.body.match /thank/i
+                return broadcastMessage @participants, "Malcolm: You're welcome, "+senderName
 
+            elsif message.body.match /help/i
+                return broadcastMessage(@participants, ("Malcolm: Greetings " +senderName+", my name is Malcolm, and I coordinate this chatroom. I can tell you who's here, the time, or remove you from the room"))
+
+            #else
+                # Default / Give up
+            #    return broadcastMessage @participants, "Malcolm: Sorry? Is there a way I can help?"
+            end
+            return []
         end
 
-        def onMessage(message)
+        def onMessage(incomingMsg)
             # Status Guard
-            statusMsgs = onStatus(message.from.stripped)
+            statusMsgs = onStatus incomingMsg.from.stripped
+
+            # Transformation
+            message = transformMessage incomingMsg
 
             # Query handling
             queryMsgs = []
-            if message.body.match /Malcolm/ or message.body.match /malcolm/
-                queryMsgs = onQuery(message)
+            if message.body.match /Malcolm/i
+                queryMsgs = onQuery message
             end
 
             # Broadcast

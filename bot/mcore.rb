@@ -1,19 +1,24 @@
 require 'rubygems'
 require 'blather/client'
-
+require './bot/bitbot'
 require './bot/malcolm'
 
 require 'logger'
 
 # Core Logger init
-log       = Logger.new(STDOUT)
+log = Logger.new(STDOUT)
 log.level = Logger::DEBUG
 
 # Login info
 botUsername = ''
 botPassword = ''
 
-malcolm = Bot::Malcolm.new()
+bitlyUsername = ''
+bitlyApiKey   = ''
+
+# Bots
+bitbot = Bot::BitBot.new(bitlyUsername, bitlyApiKey)
+malcolm = Bot::Malcolm.new(bitbot)
 
 setup botUsername, botPassword, 'talk.google.com', 5222
 
