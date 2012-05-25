@@ -18,6 +18,11 @@ botUsername = ''
 botPassword = ''
 in bot/mcore.rb
 
+You'll also need a Bitly API key to allow for URL shortening, which you can fill in
+bitlyUsername = ''
+bitlyApikey   = ''
+in bot/mcore.rb
+
 You can customise malcolm's behavior in malcolm.rb
 
 Run
