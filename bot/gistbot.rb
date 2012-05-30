@@ -13,7 +13,6 @@ module Bot
 
         def gistify(body)
             gist = ActiveGist.create!(:files => { 'body' => { :content => body } })
-            @log.debug "[GistBot]: Gist create -> "+(gist.html_url)
             return gist.html_url if gist.html_url 
             # Otherwise couldn't gistify it
             return body
