@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'blather/client'
 require './bot/bitbot'
+require './bot/gistbot'
 require './bot/malcolm'
 
 require 'logger'
@@ -18,7 +19,9 @@ bitlyApiKey   = ''
 
 # Bots
 bitbot = Bot::BitBot.new(bitlyUsername, bitlyApiKey)
-malcolm = Bot::Malcolm.new(bitbot)
+gistbot = Bot::GistBot.new()
+
+malcolm = Bot::Malcolm.new(bitbot, gistbot)
 
 setup botUsername, botPassword, 'talk.google.com', 5222
 

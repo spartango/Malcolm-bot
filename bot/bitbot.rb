@@ -21,10 +21,12 @@ module Bot
             end
         end
 
-        def transformMessage(message)
-            transformed = message.copy()
-            transformed.body= shortenUrls message.body
-            return transformed
+        # Operates on the message in place
+        def transformMessage(message)  
+            #transformed = message.copy()
+            message.body= (shortenUrls message.body) if message.body.match URI.regexp
+            
+            return message
         end
 
         def onStatus(fromNodeName)
