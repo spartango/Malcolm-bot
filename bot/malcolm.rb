@@ -1,13 +1,9 @@
 require 'logger'
 require 'blather/stanza/message'
-require './bot/bitbot'
-require './bot/gistbot'
 
 module Bot
     class Malcolm 
-        def initialize(bitbot, gistbot)
-            @bitbot = bitbot
-            @gistbot = gistbot
+        def initialize()
             @participants = []
             @log          = Logger.new(STDOUT)
             @log.level    = Logger::DEBUG
@@ -27,11 +23,7 @@ module Bot
 
         # Applies transforms to a given message
         def transformMessage(message) 
-            # Gistify messages first, if requested
-            # Turn urls into bitly urls
-            transformed = @gistbot.transformMessage message
-            transformed = @bitbot.transformMessage transformed
-            return transformed
+            return message
         end
 
         # Events

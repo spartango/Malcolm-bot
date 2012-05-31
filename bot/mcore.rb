@@ -17,11 +17,14 @@ botPassword = ''
 bitlyUsername = ''
 bitlyApiKey   = ''
 
+# Optional, Gist will work without this
+gistUsername = ''
+gistPassword = ''
+
 # Bots
 bitbot = Bot::BitBot.new(bitlyUsername, bitlyApiKey)
 gistbot = Bot::GistBot.new()
-
-malcolm = Bot::Malcolm.new(bitbot, gistbot)
+malcolm = Bot::Malcolm.new()
 
 setup botUsername, botPassword, 'talk.google.com', 5222
 
@@ -53,7 +56,12 @@ end
 
 # Message handling
 message :chat?, :body do |message| 
+    # Message transformation by bots
+    # Gistify messages first, if requested
+    transformed = gistbot.transformMessage message
+    # Turn urls into bitly urls
+    transformed = bitbot.transformMessage transformed
     # Pass to bots for processing
-    send_messages malcolm.onMessage message
+    send_messages malcolm.onMessage transformed
 end
 
