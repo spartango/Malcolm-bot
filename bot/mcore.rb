@@ -21,10 +21,14 @@ bitlyApiKey   = ''
 gistUsername = ''
 gistPassword = ''
 
+# Allowed users
+# Leave this nil to allow all
+allowed = nil
+
 # Bots
 bitbot = Bot::BitBot.new(bitlyUsername, bitlyApiKey)
 gistbot = Bot::GistBot.new()
-malcolm = Bot::Malcolm.new()
+malcolm = Bot::Malcolm.new(allowed)
 
 setup botUsername, botPassword, 'talk.google.com', 5222
 
@@ -37,31 +41,52 @@ when_ready do
     log.warn "[Core]: Ready!"
 end
 
-# Handlers
-
-# Online/offline handling
-status do |s| 
-    fromNodeName = s.from.stripped
-    log.debug "[Core]: status of "+s.from.to_s+" is "+s.state.to_s
-    if not fromNodeName.to_s == botUsername
-        send_messages malcolm.onStatus fromNodeName
-    end
+disconnected do 
+    log.error "[Core]: Disconnected, reconnecting..."
+    client.connect 
 end
+
+# Handlers
 
 # Subscription handling
 subscription :request? do |s|
-    write_to_stream s.approve!
-    log.info "[Core]: approved "+s.to.to_s
+    log.warn "[Core]: Got subscription "
+    send_messages malcolm.onSubscribe s
+end
+
+presence do |s|
+    if s.unsubscribe? 
+        log.debug "[Core]: Got unsubscribe "
+        send_messages malcolm.onUnsubscribe s.from.stripped.to_s
+    elsif s.unavailable?
+        log.debug "[Core]: Got unavailable "
+        send_messages malcolm.onUnavailable s.from  
+    end
+end
+
+status do |s|
+    if s.unsubscribe? 
+        log.debug "[Core]: Got unsubscribe"
+        send_messages malcolm.onUnsubscribe s.from.stripped.to_s
+    elsif s.unavailable?
+        log.debug "[Core]: Got unavailable"
+        send_messages malcolm.onUnavailable s.from  
+    elsif not s.from.stripped.to_s == botUsername
+        send_messages malcolm.onStatus s
+    end
 end
 
 # Message handling
 message :chat?, :body do |message| 
     # Message transformation by bots
+
     # Gistify messages first, if requested
     transformed = gistbot.transformMessage message
+
     # Turn urls into bitly urls
     transformed = bitbot.transformMessage transformed
-    # Pass to bots for processing
+
+    # Pass to broadcaster
     send_messages malcolm.onMessage transformed
 end
 
