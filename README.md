@@ -50,6 +50,7 @@ Fill in
 and
 
 > botPassword = ''
+
 in bot/mcore.rb
 
 You'll also need a Bitly API key to allow for URL shortening, which you can fill in
