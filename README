@@ -20,6 +20,19 @@ Url shortening is automatic, making use of bit.ly, but you can easily disable it
 To create gists from long messages, simply prefix your message with 
 > malcolm gist [messagebody]
 
+Malcolm supports a few other directives, such as
+
+* User listing, just ask:
+> Malcolm who's here?
+
+* Nicknames:
+> Malcolm, my name is [name]
+
+* User access:
+> Malcolm, allow [username@domain]
+
+None of malcolm's directives are case or punctuation sensitive. 
+
 Install 
 -------
 
