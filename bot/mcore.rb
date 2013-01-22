@@ -14,9 +14,6 @@ log.level = Logger::DEBUG
 botUsername = ''
 botPassword = ''
 
-bitlyUsername = ''
-bitlyApiKey   = ''
-
 # Optional, Gist will work without this
 gistUsername = ''
 gistPassword = ''
@@ -26,7 +23,6 @@ gistPassword = ''
 allowed = nil
 
 # Bots
-bitbot = Bot::BitBot.new(bitlyUsername, bitlyApiKey)
 gistbot = Bot::GistBot.new()
 malcolm = Bot::Malcolm.new(allowed)
 
@@ -82,10 +78,7 @@ message :chat?, :body do |message|
 
     # Gistify messages first, if requested
     transformed = gistbot.transformMessage message
-
-    # Turn urls into bitly urls
-    transformed = bitbot.transformMessage transformed
-
+    
     # Pass to broadcaster
     send_messages malcolm.onMessage transformed
 end
