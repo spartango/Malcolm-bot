@@ -1,7 +1,5 @@
 require 'rubygems'
 require 'blather/client'
-require './bot/bitbot'
-require './bot/gistbot'
 require './bot/malcolm'
 
 require 'logger'
@@ -14,16 +12,11 @@ log.level = Logger::DEBUG
 botUsername = ''
 botPassword = ''
 
-# Optional, Gist will work without this
-gistUsername = ''
-gistPassword = ''
-
 # Allowed users
 # Leave this nil to allow all
 allowed = nil
 
 # Bots
-gistbot = Bot::GistBot.new()
 malcolm = Bot::Malcolm.new(allowed)
 
 setup botUsername, botPassword, 'talk.google.com', 5222
@@ -74,12 +67,7 @@ end
 
 # Message handling
 message :chat?, :body do |message| 
-    # Message transformation by bots
-
-    # Gistify messages first, if requested
-    transformed = gistbot.transformMessage message
-    
     # Pass to broadcaster
-    send_messages malcolm.onMessage transformed
+    send_messages malcolm.onMessage message
 end
 
