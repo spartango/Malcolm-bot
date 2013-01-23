@@ -1,6 +1,7 @@
 require 'rubygems'
 require 'blather/client'
 require './bot/malcolm'
+require './bot/mapbot'
 
 require 'logger'
 
@@ -18,6 +19,7 @@ allowed = nil
 
 # Bots
 malcolm = Bot::Malcolm.new(allowed)
+mapbot  = Bot::MapBot.new()
 
 setup botUsername, botPassword, 'talk.google.com', 5222
 
@@ -68,6 +70,7 @@ end
 # Message handling
 message :chat?, :body do |message| 
     # Pass to broadcaster
-    send_messages malcolm.onMessage message
+    transformed = mapbot.transformMessage message
+    send_messages malcolm.onMessage transformed
 end
 
