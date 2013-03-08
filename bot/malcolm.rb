@@ -1,5 +1,6 @@
 require 'logger'
 require 'blather/stanza/message'
+require 'blather/stanza/presence/status'
 
 require './bot/user'
 
@@ -84,7 +85,11 @@ module Bot
         def onStatus(status)
             user = getUser status.from
             user.addResource status.from.resource.to_s if user
-            return []
+
+            # Set the status message to be the list of active users
+            status = Blather::Stanza::Presence::Status.new
+            status.message = self.onlineParticipants.join(', ')
+            return [status]
         end
 
         def onQuery(message, user)
